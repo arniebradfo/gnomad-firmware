@@ -1,0 +1,9 @@
+# Gnomad (FORK.md): undefined-behaviour checks of the fork's host tests cover our code (the gn_* files)
+# and not upstream's, whose DSP shifts negative values left by design (two's complement, as its
+# compilers do): upstream's sources are listed here (clang -fsanitize-ignorelist).
+[undefined]
+src:*firmware/src/[!g]*
+src:*firmware/src/g[!n]*
+src:*firmware/hal/*
+src:*tests/hostsim.c
+src:*build/gen/*

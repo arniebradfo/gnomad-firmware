@@ -1,0 +1,49 @@
+GNOME	0	Little Ah	p	264	0	gnome
+GNOME	1	Sing Song	p	320	0	gnome
+GNOME	2	Giggle	p	318	0	gnome
+GNOME	3	Monster	p	377	0	gnome
+GNOME	4	Chipmunk	p	378	0	gnome
+KEYS	0	Lamplight	p	80	0	fm
+KEYS	1	Felt Upright	p	110	0	fm
+KEYS	2	Toy Upright	p	111	0	fm
+KEYS	3	Parlor Organ	p	68	0	va
+KEYS	4	Rotary Bars	p	98	0	fm
+KEYS	5	Squeezebox	p	73	0	va
+BELLS	0	Starlight Glock	p	327	0	fm
+BELLS	1	Marimba Keys	p	119	0	fm
+BELLS	2	Kalimba Seed	p	225	0	fm
+BELLS	3	Puddle Pan	p	337	0	fm
+BELLS	4	Celesta Bell	p	340	0	fm
+SYNTH	0	Sunbeam	p	132	0	va
+SYNTH	1	Square Dance	p	134	0	va
+SYNTH	2	Wide Saws	p	142	0	va
+SYNTH	3	Acid Lead	p	141	0	va
+SYNTH	4	Chord Stab	p	79	0	va
+SYNTH	5	Synth Pluck	p	222	0	va
+BASS	0	Whale Song	p	52	-1	gnome
+BASS	1	Moss Sub	p	5	-1	va
+BASS	2	Rubber Band	p	1	-1	va
+BASS	3	Square Root	p	29	-1	va
+BASS	4	Deep Current	p	37	-1	fm
+BASS	5	Acid Drip	p	9	-1	va
+PADS	0	Warm Choir	p	208	0	gnome
+PADS	1	Soft Strings	p	178	0	va
+PADS	2	Warm Blanket	p	174	0	va
+PADS	3	Shimmer Pad	p	204	0	fm
+FUNNY	0	Whoopee Cushion	p	361	0	va
+FUNNY	1	Big Burp	p	362	0	va
+FUNNY	2	Big Boing	p	360	0	va
+FUNNY	3	Slide Whistle	p	358	0	va
+FUNNY	4	Sad Trombone	p	369	0	va
+FUNNY	5	Bomb Drop	p	366	0	va
+FUNNY	6	Duck Quack	p	363	0	va
+FUNNY	7	Pew Pew	p	359	0	va
+BAND	0	Nylon Pluck	p	227	0	fm
+BAND	1	Harp Drops	p	224	0	fm
+BAND	2	Brass Kite	p	160	0	fm
+BAND	3	Breath Flute	p	138	0	va
+DRUMS	0	Big Step	k	0	0	drums
+DRUMS	1	Boom Bap	k	4	0	drums
+DRUMS	2	Robot	k	13	0	drums
+DRUMS	3	Toy	k	12	0	drums
+DRUMS	4	Latin	k	10	0	drums

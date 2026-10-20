@@ -1,0 +1,45 @@
+title: "iOS/iPad app: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in the Gnomad app for iPhone and iPad. It is not out yet. It adds the lessons
+        ("Music with the Gnome" and a kids' Learning pack), a big-screen sound library, live play from MIDI
+        keyboards, and the FM-1 as a keyboard for your other music apps.
+
+        We'll reply in this thread. **Please do not post an email address,
+        phone number or other personal details**: Discussions are public.
+  - type: dropdown
+    id: device
+    attributes:
+      label: What would you run it on?
+      multiple: true
+      options:
+        - iPhone
+        - iPad
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: who
+    attributes:
+      label: Who would play?
+      multiple: true
+      options:
+        - Me (new to synths)
+        - Me (I already play synths)
+        - A child or children
+        - A class or group
+        - Other
+  - type: textarea
+    id: use
+    attributes:
+      label: What would you like to do with it?
+      description: Lessons, jamming, live sets, using it with other apps or MIDI controllers... anything helps.
+  - type: checkboxes
+    id: fm1
+    attributes:
+      label: Your FM-1
+      options:
+        - label: I have an M-VAVE FM-1
+        - label: Gnomad firmware is already on it

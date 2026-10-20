@@ -1,0 +1,17 @@
+Gnomad sound core (gnomad-core), vendored into the Gnomad firmware.
+
+Copyright (C) 2026 Kyle Palaniuk. The core is the owner's code, written clean-room under the core repository's
+PROVENANCE.md (no Felucca, SLOOP or other synthesizer source read). Inside this firmware, the files under
+firmware/gnomad-core/include and firmware/gnomad-core/src are granted under GPL-3.0-only (LICENSE at the
+repository root) as part of the firmware's corresponding source (PROVENANCE.md rule 5). The owner keeps all other
+rights, including distributing the core outside this firmware under other terms.
+
+Except: the open-source code the core adapts keeps its own licence and notices,
+vendored with it: CORE-NOTICE (the core's NOTICE: the drum voices adapted from Emilie Gillet's eurorack code, MIT,
+whose permission notice src/drums.c and src/drum_blocks.h also carry) and third_party/msfa (the FM operator kernel
+adapted from Google's music-synthesizer-for-android, Apache-2.0: LICENSE, NOTICE, UPSTREAM.md and the change
+record CHANGES.md). Both licences are compatible with GPL-3.0; the firmware's ABOUT page credits both.
+
+The files are vendored as committed in the core repository, without per-file SPDX headers; CORE-VERSION.txt names
+the commit and lists every file with its SHA-256 and the generated changes (src/tables.h guarded per table,
+src/gnomad_core.h, gn_core_unity.h, gn_core_records.h). Re-vendor with sync-core.sh, never by hand.

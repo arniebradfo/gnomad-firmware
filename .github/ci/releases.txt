@@ -1,0 +1,15 @@
+# Gnomad (see FORK.md). Gnomad's firmware releases, oldest first: "<release number> <INFO as the synth reports it>".
+# The release site's manifest gives the build it is made from the next number (the highest here + 1) and lists every
+# INFO here as "supersedes": the app offers Update only to a synth whose INFO is in that list, so a dev build, a
+# downgrade or an unknown build is never offered one. When a signed release is published, add its line here.
+1 FELUCCA GNOMAD V1 c40a23
+2 FELUCCA GNOMAD V1 1bd443
+3 FELUCCA GNOMAD ENG 41377
+4 FELUCCA GNOMAD ENG b0bb9
+5 FELUCCA GNOMAD V1 da6388
+6 FELUCCA GNOMAD V1 61a326
+7 FELUCCA GNOMAD V1 f3b245
+8 FELUCCA GNOMAD V1 407714
+9 FELUCCA GNOMAD V1 92ae6e
+10 FELUCCA GNOMAD V1 81727b
+11 FELUCCA GNOMAD V1 3487b5

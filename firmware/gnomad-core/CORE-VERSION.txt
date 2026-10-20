@@ -1,0 +1,59 @@
+gnomad-core vendored into the Gnomad firmware (FORK.md, "Gnomad engines")
+
+commit   5b6437a9c8ca89427f4f0ce7985392e72cf9adca
+subject  gnome-breath-migrate: the 24 breathy Gnome sounds (and all 46 small-breath ones) move from the 1.1 Breath noise to Aspiration/Softness; factory Breath retired (G7b); levels re-fitted to G3/G10 under the ensemble (CHANGES-1.1.8)
+date     2026-10-13T10:06:23-07:00
+tree     4c48610df877c29cfa56665b5505fa316316e108
+source   gnomad-core (git archive of the commit: committed bytes only; GNOMAD_CORE names the local clone)
+vendored by firmware/gnomad-core/sync-core.sh: every field here comes from the commit, so a re-run at the
+         same commit writes the same bytes (no time, no local path)
+tests    the core's make test at this commit: 118 passed, 0 failed
+
+Licence: the core is the owner's (Kyle Palaniuk) code, clean-room per the core's PROVENANCE.md; inside this
+firmware it is granted under GPL-3.0-only as part of the firmware's corresponding source (PROVENANCE.md rule 5).
+The files are vendored as committed, without SPDX headers of their own; NOTICE.txt here states the grant.
+Open-source code the core adapts keeps its own licence and notices: CORE-NOTICE (the core's
+NOTICE, as committed) and third_party/<lib>/ (LICENSE, NOTICE, UPSTREAM.md, CHANGES.md).
+
+Changes against the commit: src/tables.h is the core's generated tables.h with each table under its own
+guard (unity_tables.py: 31 tables guarded); src/gnomad_core.h is a generated forward; gn_core_unity.h and
+gn_core_records.h are generated. Not vendored: third_party/*/upstream (the core's host-test reference, built
+by no firmware target). Nothing else differs but five comment lines, shortened for the public source after
+vendoring (CORE-NOTICE, third_party/msfa/NOTICE, third_party/msfa/UPSTREAM.md, src/fm.c,
+src/gc_internal.h; their SHA-256 below).
+
+records (gen_records.c): caps api 00010300 profile 00010300 state 7168 B effects 65536 B engines mask 31
+  VA     patch CRC 50e2e054, peak 4110, voices free 179 ms after the note-off
+  FM     patch CRC 9c68b4a8, peak 3159, voices free 179 ms after the note-off
+  DRUMS  patch CRC b619b2b1, peak 4066, voices free 63 ms after the note-off
+  GNOME  patch CRC 48ea061f, peak 4709, voices free 119 ms after the note-off
+  SAMPLE patch CRC 1aa229e7, peak 3611, voices free 79 ms after the note-off
+
+files (SHA-256):
+  055bde784f36071b788e88d486a163e09dd809a3e719e13ad882cfcf3c85c982  include/gnomad_core.h
+  a5e35f0f098db0eb88209f8cf39c3ef2a7b127cbfe2677cd5721cbd1b0a2f489  src/core.c
+  38e4d68d718c6aa8d41c7498b96d5863ca5c862eecf91899c5804b22bd857add  src/drum_blocks.h
+  cb180191c37cfa8b2f054735dc53708903cd057508fd1773c21c13f4616ced01  src/drums.c
+  8acbc4a74b8350bd35df278b71c5b66c54ec608b45bf68c206eeb2f857981f16  src/fm.c
+  dabe2c9b18392f9e318f80ef5a682f36791a780f30587eee8301097185c6a215  src/fm_ops.h
+  623a127f60eb82bf0c85d8919816ec10a00df1f21abe509541156220b2346e43  src/fx.c
+  e6e074c0ff4469546cf65be4edbcdbb6a287dc40302dfb2ac89e18d8d1610fca  src/fx_plate.h
+  760110944a87833815683457f5a0ca58e0a28e9908f288fa3da7b41bcd9fbe92  src/gc_internal.h
+  85229897558218415829e189aff226e5d5a6fbc5e7bf517c2995564a60ce8bec  src/gnomad_core.h
+  d9648ea614288c04da7a00218afe78d7e416b7e761f476b1268f32014b126244  src/gnome_voice.c
+  60a5d636cc035c08f81fdeaa1f43eb526bb96f3ca77db6c029656d16c191ba45  src/macro.c
+  33ebd0de656208e15f0d45fa78286f2e0bdcbdf4e7178adf69cac77b9050fe6a  src/mixer.c
+  327f382d5acd01aa25c1fd9948cf142742975223cdae7381d74f08b57fec8a3c  src/prims.c
+  26cc8c94908b23629ec0b2c1213e98b0d82ad4bac3690177d11013702bf196ba  src/sample.c
+  3dbe51f66cc17a9c9f03ab92d4a1584624874f5e50cbf01984b0757b8fc4f42d  src/tables.c
+  0585346a5411f2405e25d913e1b33cba319963c48af3894c961ff6d6bceb1ffd  src/tables.h
+  499b56fd35583536273442ee2bc1c6b04bee3c77eb22c0cdcf38e7c2da496886  src/va.c
+  c0aaa3c0dcfa341d3e0b4668e7eb7fe975872f7b29932555d1069826a4e6f3d6  src/voices.c
+  876e69590146e7b5dea0c2c672850f863492c5c2523b200da7d0717beb1b3071  third_party/msfa/CHANGES.md
+  cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30  third_party/msfa/LICENSE
+  fc163f58ae9320b2fab7d57aed64e1d5fbf138cf5bcd3c5028cd148cd4878627  third_party/msfa/NOTICE
+  6d35cf115ef4c54ec0388d9022cf992ebed572ae88223ba2f3d2a265260dae6a  third_party/msfa/UPSTREAM.md
+  ad53633be5dfd2da5878db100348a180d09381fec567e4e53c18a1b1f5aa3896  third_party/msfa/adapted/msfa_kernel.h
+  97ddf2abbc39ac91b0f23ce81b6c4c07b6edd47e7f7bac1b8dbbcded83da0571  CORE-NOTICE
+  4f23f74be9f77b79378cc7307e505331d1dffafd4544db767ae2b97b4ac0cc1b  gn_core_unity.h
+  f484b6158c02253f10b226de0cc712e4ca54715897cc74cfef1b14fa250beda9  gn_core_records.h

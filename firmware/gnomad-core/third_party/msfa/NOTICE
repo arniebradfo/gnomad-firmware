@@ -1,0 +1,39 @@
+music-synthesizer-for-android (msfa)
+https://github.com/google/music-synthesizer-for-android
+Copyright 2012 Google Inc.
+Copyright 2013 Google Inc.
+Licensed under the Apache License, Version 2.0 (see LICENSE in this directory).
+
+(Upstream ships no NOTICE file; the lines above are the copyright notices
+from the headers of the vendored source files, reproduced verbatim.)
+
+----------------------------------------------------------------------
+Gnomad modifications (2026-10-11)
+----------------------------------------------------------------------
+The Gnomad FM engine (src/fm.c, src/fm_ops.h) uses a C99 adaptation of
+the msfa FM operator kernel in third_party/msfa/adapted/msfa_kernel.h,
+derived from upstream sin.h/sin.cc, exp2.h/exp2.cc, fm_op_kernel.cc and
+env.cc (Env::getsample's stepping law; env.cc itself is not vendored) at
+commit f67d41d313b7dc85f6fb99e79e515cc9d208cfff:
+
+- Tables: msfa_sin (2048 x int32, upstream SIN_DELTA layout) and
+  msfa_exp2 (1024 x uint32, the y column of upstream exp2tab) are generated
+  offline by tools/gen_tables.py, which re-implements upstream's Sin::init
+  and Exp2::init recipes with certified seeds and exact arithmetic (no
+  runtime initialisation, no libm). They are bit-identical to upstream's.
+- Arithmetic: C++ classes became static inline C99 functions; every signed
+  right shift became an exact biased unsigned floor (identical results);
+  the exp2 delta is formed at lookup time; feedback takes a Q32 multiplier
+  (2^(32-shift) reproduces upstream's shift exactly).
+- Structure: the operator kernel runs sample-major over the six operators
+  inside a 16-sample block (upstream: op-major, 64-sample blocks); the
+  numbers are identical (tests/msfa_ref compares them against upstream's
+  FmOpKernel run op-major). Feedback may also apply to an operator that has inputs.
+- Envelopes: upstream Env's stepping law (rising jump and multiplier,
+  linear-in-log falling) is kept; the stage targets and per-tick rates are
+  computed from Gnomad's own millisecond/level patch fields instead of
+  DX7 rate/level codes.
+- Not used: upstream's DX7 algorithm table, voice/patch code (dx7note,
+  patch), frequency/LFO/pitch-envelope code, NEON kernels and all patch
+  data. Routing, pitch, index, velocity and output staging are Gnomad's.
+See third_party/msfa/CHANGES.md for the per-file record.

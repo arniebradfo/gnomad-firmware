@@ -1,0 +1,15 @@
+# Gnomad (FORK.md, "The target cost lines, adopted"): the shipping build's target cost lines, read by
+# tools/slot_cost_reachable.py --lines (the CI step "The shipping build's target cost"). One place: change a line here
+# and nowhere else. A figure over its line fails the step; the +10 % is inside each value (no tolerance on top).
+# Unit: the reachable scorer's static instruction cycles (an estimate; the clock is not modelled).
+#   slot lines: one voice, one sample, amortised (the control tick at 1/16), the engine's render and its callees
+#   IRQ: one 128-frame audio interrupt half, steady (no event), Felucca's frame + 8 voices of the dearest engine
+# Each line = the new core's (gnomad-core 6b11ee7, gn/ux 41377ee, CI 38223662324 listing) figure as printed x 1.10,
+# rounded half up (2026-10-12: today's figures +10 %).
+# name   line      source
+FM       988       # 898 x 1.10 = 987.8; core 6b11ee7; +10 % regression guard; the device bound (spare FM-1) replaces it
+GNOME    959       # 872 x 1.10 = 959.2; Gnome voice 2, core 73aac7e (2026-10-12, round MF; was 512 = 465 x 1.10 on 6b11ee7); +10 % regression guard; the device bound (spare FM-1) replaces it
+DRUMS    1025      # 932 x 1.10 = 1,025.2; core 6b11ee7; +10 % regression guard; the device bound (spare FM-1) replaces it (open cost item: FORK.md)
+SAMPLER  521       # 474 (exactly 474.5) x 1.10 = 521.4; core 6b11ee7; +10 % regression guard; the device bound (spare FM-1) replaces it
+VA       780       # 709 x 1.10 = 779.9; core 6b11ee7; +10 % regression guard; the device bound (spare FM-1) replaces it
+IRQ      2019018   # steady half 1,835,471 x 1.10 = 2,019,018.1; core 6b11ee7; +10 % regression guard; the device bound (spare FM-1) replaces it

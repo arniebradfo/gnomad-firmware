@@ -1,0 +1,146 @@
+# Gnomad, a fork of Felucca (see FORK.md). Not part of upstream Felucca.
+name: JieLi toolchain and AC79 SDK files
+description: >-
+  Restores JieLi's Linux toolchain and the three JieLi AC79 SDK files the package needs from the
+  Actions cache, or fetches them the way BUILDING.md and tools/get_toolchain.sh do and caches them.
+  Exports JIELI_TOOLCHAIN and AC79_SDK for ./build.sh and tests/run_tests.sh.
+
+inputs:
+  toolchain-url:
+    description: JieLi's toolchain download, the URL in tools/get_toolchain.sh
+    default: https://jl-update.oss-cn-shenzhen.aliyuncs.com/jieli-linux-toolchains-20250805.1.tar.xz   # pinned file; the /s/linux-toolchain link moved to 20260730.1 on 2026-10-11
+  toolchain-sha256:
+    description: SHA-256 the downloaded toolchain archive must have (empty = only record it)
+    # jieli-linux-toolchains-20250805.1.tar.xz, 26009040 B, what the URL served on 2026-10-05
+    default: f686586bcfb45e0f0bb27fd2b39c7a7f313cb4f0e88a66a14da621ffa8225958
+  sdk-repo:
+    description: JieLi's AC79 SDK repository (BUILDING.md, LICENSING.md)
+    default: https://gitee.com/Jieli-Tech/fw-AC79_AIoT_SDK.git
+  sdk-tag:
+    description: SDK tag named in BUILDING.md
+    default: AC79NN_SDK_V1.2.1_2023-12-13
+  sdk-commit:
+    description: the commit that tag points at (a moved tag fails the fetch)
+    default: d179b4484759423312073f5fbb232501aa491047
+
+runs:
+  using: composite
+  steps:
+    - name: Paths
+      shell: bash
+      run: |
+        echo "JIELI_TOOLCHAIN=$HOME/.jieli/toolchain" >> "$GITHUB_ENV"
+        echo "AC79_SDK=$HOME/fw-AC79_AIoT_SDK" >> "$GITHUB_ENV"
+
+    # ---- JieLi Linux toolchain (clang 4.0.1 for pi32v2)
+    - name: Restore JieLi toolchain
+      id: tc
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.jieli
+        key: jieli-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ runner.name }}-${{ inputs.toolchain-sha256 || 'unpinned' }}-v1
+
+    - name: Fetch JieLi toolchain
+      if: steps.tc.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        URL: ${{ inputs.toolchain-url }}
+        WANT: ${{ inputs.toolchain-sha256 }}
+      run: |
+        # as tools/get_toolchain.sh (curl -fL --retry 3 URL | tar -xJ -C ~/.jieli; link the newest
+        # jieli-linux-toolchains-* as ~/.jieli/toolchain), via a file so the archive's hash is recorded
+        dest="$HOME/.jieli"
+        rm -rf "$dest" && mkdir -p "$dest"
+        archive="$RUNNER_TEMP/jieli-linux-toolchain.tar.xz"
+        resolved=$(curl -fL --retry 3 --connect-timeout 30 -o "$archive" -w '%{url_effective}' "$URL")
+        sha=$(sha256sum "$archive" | cut -d' ' -f1)
+        size=$(stat -c %s "$archive")
+        echo "toolchain: $resolved ($size B) sha256 $sha"
+        if [ -n "$WANT" ] && [ "$sha" != "$WANT" ]; then
+          echo "::error::JieLi toolchain archive changed: $resolved has sha256 $sha, expected $WANT. If JieLi published a new toolchain on purpose, update toolchain-sha256 in .github/actions/jieli-deps/action.yml."
+          exit 1
+        fi
+        tar -xJf "$archive" -C "$dest"
+        tc="$(ls -d "$dest"/jieli-linux-toolchains-* | sort | tail -1)"
+        ln -sfn "$(basename "$tc")" "$dest/toolchain"
+        printf 'source %s\nresolved %s\nsha256 %s\nsize %s\ndirectory %s\nfetched %s\n' \
+          "$URL" "$resolved" "$sha" "$size" "$(basename "$tc")" "$(date -u +%FT%TZ)" > "$dest/PROVENANCE"
+        rm -f "$archive"
+        "$dest/toolchain/pi32v2/bin/clang" --version | head -1
+
+    - name: Save JieLi toolchain
+      if: steps.tc.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.jieli
+        key: ${{ steps.tc.outputs.cache-primary-key }}
+
+    # ---- the three AC79 SDK files tools/fm1pkg_make.py puts in the package (Apache-2.0)
+    - name: Restore AC79 SDK files
+      id: sdk
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/fw-AC79_AIoT_SDK
+        key: ac79-sdk-files-${{ runner.name }}-${{ inputs.sdk-tag }}-${{ inputs.sdk-commit }}-v1
+
+    - name: Fetch AC79 SDK files
+      if: steps.sdk.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        REPO: ${{ inputs.sdk-repo }}
+        TAG: ${{ inputs.sdk-tag }}
+        COMMIT: ${{ inputs.sdk-commit }}
+        GIT_HTTP_LOW_SPEED_LIMIT: "1000"
+        GIT_HTTP_LOW_SPEED_TIME: "60"
+      run: |
+        # BUILDING.md: git clone --depth 1 --branch <tag> <repo>; only the three files are checked out
+        sdk="$HOME/fw-AC79_AIoT_SDK"
+        tmp="$RUNNER_TEMP/ac79-sdk"
+        files="cpu/wl82/tools/uboot.boot cpu/wl82/tools/cfg_tool.bin cpu/wl82/tools/cfg/eq_cfg_hw.bin"
+        for try in 1 2 3; do
+          rm -rf "$tmp"
+          if git -c advice.detachedHead=false clone --quiet --depth 1 --branch "$TAG" \
+               --filter=blob:none --sparse "$REPO" "$tmp" &&
+             git -C "$tmp" sparse-checkout set --no-cone $(printf '/%s ' $files); then
+            break
+          fi
+          [ "$try" = 3 ] && { echo "::error::cannot fetch $TAG from $REPO"; exit 1; }
+          sleep 20
+        done
+        got=$(git -C "$tmp" rev-parse HEAD)
+        if [ "$got" != "$COMMIT" ]; then
+          echo "::error::$REPO tag $TAG is at $got, expected $COMMIT"
+          exit 1
+        fi
+        rm -rf "$sdk"
+        for f in $files; do install -D -m 644 "$tmp/$f" "$sdk/$f"; done
+        printf 'source %s\ntag %s\ncommit %s\nfetched %s\n' "$REPO" "$TAG" "$got" "$(date -u +%FT%TZ)" > "$sdk/PROVENANCE"
+        rm -rf "$tmp"
+
+    - name: Save AC79 SDK files
+      if: steps.sdk.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/fw-AC79_AIoT_SDK
+        key: ${{ steps.sdk.outputs.cache-primary-key }}
+
+    - name: Check SDK files against tools/build.py
+      shell: bash
+      run: |
+        # the SHA-256 values tools/build.py lists for the tested SDK; it only warns, CI fails
+        python3 - <<'EOF'
+        import ast, hashlib, os, re, sys
+        from pathlib import Path
+        src = Path("tools/build.py").read_text()
+        want = ast.literal_eval(re.search(r"^SDK_SHA256 = (\{.*?^\})", src, re.M | re.S).group(1))
+        root = Path(os.environ["AC79_SDK"]) / "cpu" / "wl82" / "tools"
+        bad = 0
+        for rel, sha in want.items():
+            got = hashlib.sha256((root / rel).read_bytes()).hexdigest()
+            print(f"{'ok  ' if got == sha else 'DIFF'} {rel} {got}")
+            bad += got != sha
+        if bad:
+            print("::error::AC79 SDK files differ from tools/build.py SDK_SHA256; did upstream move to "
+                  "another SDK version? Update sdk-tag / sdk-commit in .github/actions/jieli-deps/action.yml")
+            sys.exit(1)
+        EOF

@@ -1,0 +1,19 @@
+# Gnomad engines (FW-SWAP): track 1 on the Gnomad VA through the synth's own controls, played on its keys
+at 1.0 button HOME down
++0 button SAVE down
++2.5 button SAVE up
++0 button HOME up
++1.0 button SAVE
++0.3 button SAVE
++0.3 button SAVE
++0.3 button SAVE
++0.5 shot sounds-analog
++0.2 turn KNOB2 -5 over 0.5
++0.8 shot sounds-va
++0.2 button HOME
++0.6 shot track1-va
++0.4 log key C4 on track 1
++0 key C4 0.6
++0.3 shot playing
++1.2 shot after
++0.5 end
