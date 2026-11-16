@@ -22,7 +22,6 @@ import shutil
 import struct
 import subprocess
 import sys
-import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -187,12 +186,6 @@ def build_app():
     flags.append(f'-DFELUCCA_ID="{PRODUCT}"')
     if VERSION:
         flags.append(f'-DFELUCCA_VERSION="{VERSION}"')
-    # SOURCE_DATE_EPOCH (reproducible-builds.org): the ABOUT page's __DATE__ from it, not the clock, so a
-    # rebuild of a commit makes the same bytes (JieLi's clang 4 does not read the variable itself)
-    if sde := os.environ.get("SOURCE_DATE_EPOCH"):
-        d = time.gmtime(int(sde))
-        mon = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()[d.tm_mon - 1]
-        flags += ["-Wno-builtin-macro-redefined", f'-D__DATE__="{mon} {d.tm_mday:2d} {d.tm_year}"']
     # felucca.c goes to LLVM IR without the optimizer, the main-loop functions (UI, stores, editor) are
     # marked minsize (tools/size_fns.py), then the IR is compiled at -Os. FELUCCA_SIZE=0: -Os everywhere
     size = os.environ.get("FELUCCA_SIZE") != "0"
